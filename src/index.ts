@@ -7,12 +7,12 @@ export class Tabcast<T> {
     message: new Set(),
   };
 
-  constructor() {
+  constructor(private channel?: string) {
     window.addEventListener('storage', e => this.handleStorage(e));
   }
 
   broadcast(message: T) {
-    localStorage.setItem(localStorageItem, JSON.stringify(message));
+    localStorage.setItem(this.itemName, JSON.stringify(message));
   }
 
   /**
@@ -47,6 +47,10 @@ export class Tabcast<T> {
     this.events[eventType].delete(listener as any);
   }
 
+  private get itemName() {
+    return localStorageItem + (this.channel ? '_' + this.channel : '');
+  }
+
   private emit(eventType: keyof TabcastEvents, ...args: any[]) {
     for (let listener of this.events[eventType]) {
       (listener as Function).apply(this, args);
@@ -54,7 +58,7 @@ export class Tabcast<T> {
   }
 
   private handleStorage(e: StorageEvent) {
-    if (e.key !== localStorageItem || !e.newValue) {
+    if (e.key !== this.itemName || !e.newValue) {
       return;
     }
 
