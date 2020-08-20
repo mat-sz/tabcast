@@ -28,7 +28,7 @@ yarn install tabcast
 ```ts
 import Tabcast from 'tabcast';
 
-const cast = new Tabcast();
+const cast = new Tabcast(); // or new Tabcast('channel');
 
 cast.on('message', (message: any) => {
   console.log(message);
