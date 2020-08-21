@@ -22,4 +22,28 @@ describe('Tabcast', () => {
 
     expect(fn).toBeCalledWith('Hello world!');
   });
+
+  it('broadcasts messages in a named channel', () => {
+    const tabcast = new Tabcast('channel');
+    tabcast.broadcast('Hello world!');
+
+    expect(localStorage.getItem('___tabcast_channel')).toEqual(
+      '"Hello world!"'
+    );
+  });
+
+  it('receives messages from a named channel', () => {
+    const tabcast = new Tabcast('channel');
+    const fn = jest.fn();
+    tabcast.on('message', fn);
+
+    window.dispatchEvent(
+      new StorageEvent('storage', {
+        key: '___tabcast_channel',
+        newValue: '"Hello world!"',
+      })
+    );
+
+    expect(fn).toBeCalledWith('Hello world!');
+  });
 });
