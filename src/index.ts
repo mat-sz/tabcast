@@ -13,6 +13,7 @@ export class Tabcast<T> {
 
   broadcast(message: T) {
     localStorage.setItem(this.itemName, JSON.stringify(message));
+    localStorage.removeItem(this.itemName);
   }
 
   /**

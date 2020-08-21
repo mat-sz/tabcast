@@ -3,9 +3,10 @@ import { Tabcast } from '../src';
 describe('Tabcast', () => {
   it('broadcasts messages', () => {
     const tabcast = new Tabcast();
+    const setItem = jest.spyOn(window.localStorage.__proto__, 'setItem');
     tabcast.broadcast('Hello world!');
 
-    expect(localStorage.getItem('___tabcast')).toEqual('"Hello world!"');
+    expect(setItem).toBeCalledWith('___tabcast', '"Hello world!"');
   });
 
   it('receives messages', () => {
@@ -25,11 +26,10 @@ describe('Tabcast', () => {
 
   it('broadcasts messages in a named channel', () => {
     const tabcast = new Tabcast('channel');
+    const setItem = jest.spyOn(window.localStorage.__proto__, 'setItem');
     tabcast.broadcast('Hello world!');
 
-    expect(localStorage.getItem('___tabcast_channel')).toEqual(
-      '"Hello world!"'
-    );
+    expect(setItem).toBeCalledWith('___tabcast_channel', '"Hello world!"');
   });
 
   it('receives messages from a named channel', () => {
