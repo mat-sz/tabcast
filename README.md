@@ -36,3 +36,22 @@ cast.on('message', (message: any) => {
 
 cast.broadcast('Hello, world!');
 ```
+
+## Events
+
+## message
+
+Emitted when a valid message is received.
+
+The only argument contains an object of type T with a deserialized message.
+
+## API
+
+```
+on(eventType: 'message', listener: (message: T) => void);
+
+off(eventType: 'message', listener: (message: T) => void);
+
+constructor(private channel: string);
+broadcast(message: T);
+```
