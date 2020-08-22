@@ -3,7 +3,7 @@ import { TabcastEvents, TabcastMessageEventListener } from './events';
 const localStorageItem = '___tabcast';
 
 export class Tabcast<T> {
-  private events: TabcastEvents = {
+  private events: TabcastEvents<T> = {
     message: new Set(),
   };
 
@@ -21,14 +21,14 @@ export class Tabcast<T> {
    * @param eventType Event type. (message)
    * @param listener Listener function.
    */
-  on(eventType: 'message', listener: TabcastMessageEventListener): void;
+  on(eventType: 'message', listener: TabcastMessageEventListener<T>): void;
 
   /**
    * Adds a listener for a given event.
    * @param eventType Event type.
    * @param listener Listener function.
    */
-  on(eventType: keyof TabcastEvents, listener: Function) {
+  on(eventType: keyof TabcastEvents<T>, listener: Function) {
     this.events[eventType].add(listener as any);
   }
 
@@ -37,14 +37,14 @@ export class Tabcast<T> {
    * @param eventType Event type. (message)
    * @param listener Listener function.
    */
-  off(eventType: 'message', listener: TabcastMessageEventListener): void;
+  off(eventType: 'message', listener: TabcastMessageEventListener<T>): void;
 
   /**
    * Removes a listener for a given event.
    * @param eventType Event type.
    * @param listener Listener function.
    */
-  off(eventType: keyof TabcastEvents, listener: Function) {
+  off(eventType: keyof TabcastEvents<T>, listener: Function) {
     this.events[eventType].delete(listener as any);
   }
 
@@ -52,7 +52,7 @@ export class Tabcast<T> {
     return localStorageItem + (this.channel ? '_' + this.channel : '');
   }
 
-  private emit(eventType: keyof TabcastEvents, ...args: any[]) {
+  private emit(eventType: keyof TabcastEvents<T>, ...args: any[]) {
     for (let listener of this.events[eventType]) {
       (listener as Function).apply(this, args);
     }

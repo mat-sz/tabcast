@@ -1,10 +1,10 @@
 import { Tabcast } from './';
 
-export type TabcastMessageEventListener = <T>(
+export type TabcastMessageEventListener<T> = <T>(
   this: Tabcast<T>,
   message: T
 ) => void;
 
-export interface TabcastEvents {
-  message: Set<TabcastMessageEventListener>;
+export interface TabcastEvents<T> {
+  message: Set<TabcastMessageEventListener<T>>;
 }
