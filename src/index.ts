@@ -11,7 +11,7 @@ export class Tabcast<T> {
     window.addEventListener('storage', e => this.handleStorage(e));
   }
 
-  broadcast(message: T) {
+  broadcast(message: T): void {
     localStorage.setItem(this.itemName, JSON.stringify(message));
     localStorage.removeItem(this.itemName);
   }
@@ -28,7 +28,7 @@ export class Tabcast<T> {
    * @param eventType Event type.
    * @param listener Listener function.
    */
-  on(eventType: keyof TabcastEvents<T>, listener: Function) {
+  on(eventType: keyof TabcastEvents<T>, listener: Function): void {
     this.events[eventType].add(listener as any);
   }
 
@@ -44,7 +44,7 @@ export class Tabcast<T> {
    * @param eventType Event type.
    * @param listener Listener function.
    */
-  off(eventType: keyof TabcastEvents<T>, listener: Function) {
+  off(eventType: keyof TabcastEvents<T>, listener: Function): void {
     this.events[eventType].delete(listener as any);
   }
 
@@ -53,7 +53,7 @@ export class Tabcast<T> {
   }
 
   private emit(eventType: keyof TabcastEvents<T>, ...args: any[]) {
-    for (let listener of this.events[eventType]) {
+    for (const listener of this.events[eventType]) {
       (listener as Function).apply(this, args);
     }
   }
