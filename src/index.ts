@@ -1,19 +1,32 @@
 import { TabcastEvents, TabcastMessageEventListener } from './events';
 
+const isBroadcastChannelSupported = !!window.BroadcastChannel;
 const localStorageItem = '___tabcast';
 
 export class Tabcast<T> {
+  private broadcastChannel?: BroadcastChannel;
   private events: TabcastEvents<T> = {
     message: new Set(),
   };
 
   constructor(private channel?: string) {
-    window.addEventListener('storage', e => this.handleStorage(e));
+    if (isBroadcastChannelSupported) {
+      this.broadcastChannel = new BroadcastChannel(this.itemName);
+      this.broadcastChannel.addEventListener('message', e =>
+        this.handleMessage(e)
+      );
+    } else {
+      window.addEventListener('storage', e => this.handleStorage(e));
+    }
   }
 
   broadcast(message: T): void {
-    localStorage.setItem(this.itemName, JSON.stringify(message));
-    localStorage.removeItem(this.itemName);
+    if (isBroadcastChannelSupported) {
+      this.broadcastChannel?.postMessage(message);
+    } else {
+      localStorage.setItem(this.itemName, JSON.stringify(message));
+      localStorage.removeItem(this.itemName);
+    }
   }
 
   /**
@@ -65,6 +78,13 @@ export class Tabcast<T> {
 
     try {
       const data = JSON.parse(e.newValue);
+      this.emit('message', data);
+    } catch {}
+  }
+
+  private handleMessage(e: MessageEvent) {
+    try {
+      const data = e.data;
       this.emit('message', data);
     } catch {}
   }
